@@ -11,7 +11,7 @@
         @endif
 
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="mb-0">Shop List Total :</h4>
+            <h4 class="mb-0">Shop List Total : {{ @$shopCount }}</h4>
         </div>
 
         <!-- Add + Search Section -->
@@ -21,7 +21,7 @@
 
             <!-- Right side: Search form -->
             <form action="#" method="GET" class="d-flex" style="max-width: 300px;">
-                <input type="text" class="form-control" placeholder="Search" name="search" value="{{ request('search') }}">
+                <input type="text" class="form-control" placeholder="Search heare" name="search" value="{{ request('search') }}">
                 <button class="btn btn-primary ms-2" type="submit">Search</button>
             </form>
         </div>
@@ -64,6 +64,7 @@
                 @endforelse
             </tbody>
         </table>
+        {{ $shopList->links() }}
     </div>
 
 @endsection

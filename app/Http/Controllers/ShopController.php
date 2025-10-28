@@ -7,12 +7,27 @@ use Illuminate\Support\Facades\DB;
 
 class ShopController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // $shopList = app('db')->table('shops')->get();
-        $shopList = DB::table('shops')->get();
+        // $shopList = DB::table('shops')->orderBy('id', 'desc')->paginate(5);
 
-        return view('shop.index', compact('shopList'));
+        $shopCount = DB::table('shops')->count();
+
+        $query = DB::table('shops')->orderBy('id');
+
+        if($search = $request->search){
+            $query->where(function ($q) use ($search) {
+                $q->where('shop_name', 'like', '%' . $search . '%')
+                    ->orWhere('shop_number', 'like', '%' . $search . '%')
+                    ->orWhere('shop_phone', 'like', '%' . $search . '%')
+                    ->orWhere('shop_email', 'like', '%' . $search . '%');
+            });
+        }
+
+        $shopList = $query->cursorPaginate(5)->appends(['search' => $request->search]);
+
+        return view('shop.index', compact('shopList', 'shopCount'));
     }
 
     public function create()
