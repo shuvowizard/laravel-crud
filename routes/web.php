@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\CustomerController;
 
 Route::get('/', function () {
     return view('layouts.index');
@@ -15,7 +16,6 @@ Route::get('/', function () {
 // Route::delete('shop/delete/{id}', [ShopController::class, 'destroy'])->name('shop.delete');
 
 
-
 Route::prefix('/shop')->name('shop.')->group(function(){
     Route::get('/list', [ShopController::class, 'index'])->name('index');
     Route::get('/create', [ShopController::class, 'create'])->name('create');
@@ -25,3 +25,12 @@ Route::prefix('/shop')->name('shop.')->group(function(){
     Route::delete('/delete/{id}', [ShopController::class, 'destroy'])->name('delete');
 });
 
+Route::prefix('/customer')->name('customer.')->group(function(){
+    Route::get('/list', [CustomerController::class, 'index'])->name('index');
+    Route::get('/create', [CustomerController::class, 'create'])->name('create');
+    Route::post('/store', [CustomerController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [CustomerController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}', [CustomerController::class, 'update'])->name('update');
+    Route::delete('/delete/{id}', [CustomerController::class, 'destroy'])->name('delete');
+    Route::get('/restore/{id}', [CustomerController::class, 'restore'])->name('restore');
+});
