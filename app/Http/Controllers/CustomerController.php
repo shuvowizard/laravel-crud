@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function index(Request $request){
+    public function index(Request $request)
+    {
 
         $customerCount = Customer::count();
-        
-        $query = Customer::withTrashed()->orderBy('id');
 
-        if($search = $request->search){
+        $query = Customer::withTrashed()->orderByDesc('id');
+
+        if ($search = $request->search) {
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', '%' . $search . '%')
                     ->orWhere('phone', 'like', '%' . $search . '%')
@@ -26,29 +27,38 @@ class CustomerController extends Controller
         return view('customer.index', compact('customers'));
     }
 
-    public function create(){
+    public function create()
+    {
         return view('customer.customer-create');
     }
 
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'payment' => 'required|string|max:255',
         ]);
 
-
-        Customer::create([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-        ]);
+        $customer = new Customer();
+        $customer->name = $request->name;
+        $customer->phone = $request->phone;
+        $customer->email = $request->email;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $directory = 'images/customers';
+            $customer->image = imageUpload($file, 800, 600, $directory);
+        }
+        $customer->payment = usd_to_bdt($request->payment);
+        $customer->save();
 
         return redirect()->route('customer.index')->with('success', 'Customer created successfully.');
     }
 
-    public function edit($id){
+    public function edit($id)
+    {
         $customer = Customer::findOrFail($id);
         return view('customer.customer-edit', compact('customer'));
     }
@@ -76,8 +86,8 @@ class CustomerController extends Controller
     {
         // Customer::destroy($id);
         $customer = Customer::findOrFail($id);
-        $customer->delete();
-        // $customer->forceDelete();
+        // $customer->delete();
+        $customer->forceDelete();
         return redirect()->route('customer.index')->with('success', 'Customer deleted successfully.');
     }
 

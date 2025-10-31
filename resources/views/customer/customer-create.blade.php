@@ -15,7 +15,7 @@
         @endif
 
         <div class="mb-3">
-            <form action="{{ route('customer.store') }}" method="POST">
+            <form action="{{ route('customer.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label for="customer_name" class="form-label">Customer Name</label>
@@ -41,6 +41,23 @@
                         value="{{ old('email') }}" placeholder="Enter customer email" id="email"
                         name="email">
                     @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="customer_image" class="form-label">Customer Image</label>
+                    <input type="file" class="form-control @error('image') is-invalid @enderror"
+                        value="{{ old('image') }}" id="customer_image" name="image">
+                    @error('image')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <label for="customer_payment" class="form-label">Customer Payment</label>
+                    <input type="text" class="form-control @error('payment') is-invalid @enderror"
+                        value="{{ old('payment') }}" placeholder="Enter customer payment" id="customer_payment"
+                        name="payment">
+                    @error('payment')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

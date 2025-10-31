@@ -27,22 +27,35 @@
             </form>
         </div>
 
-        <table class="table">
+        <table class="table" style="text-align: center; vertical-align: middle;">
             <thead>
                 <tr>
                     <th scope="col">#Sl</th>
                     <th scope="col">Customer Name</th>
                     <th scope="col">Customer Phone</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Payment</th>
                     <th scope="col">Customer Email</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
             </thead>
-            <tbody>
+            <tbody >
                 @forelse ($customers as $customer)
                     <tr>
-                        <td scope="row">{{ $customer->id }}</td>
+                        <td scope="row">
+                            {{ $loop->iteration }}
+                        </td>
                         <td>{{ $customer->name }}</td>
                         <td>{{ $customer->phone }}</td>
+                        <td>
+                            @if($customer->image)
+                                <img src="{{ asset($customer->image) }}" alt="{{ $customer->name }}" width="60" height="60"
+                                    class="rounded" style="object-fit: cover;">
+                            @else
+                                <span class="text-muted">No Image</span>
+                            @endif
+                        </td>
+                        <td> {{ $customer->payment }} </td>
                         <td>{{ $customer->email }}</td>
                         <td>
                             @if ($customer->deleted_at != null)
