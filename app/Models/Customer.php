@@ -21,4 +21,10 @@ class Customer extends Model
         'payment',
     ];
 
+    // getpaymentattribute 
+    public function getPaymentAttribute($value)
+    {
+        return ($value);
+    }
+
 }

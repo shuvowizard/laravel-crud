@@ -34,7 +34,7 @@
                     <th scope="col">Customer Name</th>
                     <th scope="col">Customer Phone</th>
                     <th scope="col">Image</th>
-                    <th scope="col">Payment</th>
+                    <th scope="col">Payment (BDT)</th>
                     <th scope="col">Customer Email</th>
                     <th scope="col">Status</th>
                     <th scope="col">Action</th>
@@ -49,7 +49,7 @@
                         <td>{{ $customer->phone }}</td>
                         <td>
                             @if($customer->image)
-                                <img src="{{ asset($customer->image) }}" alt="{{ $customer->name }}" width="60" height="60"
+                                <img src="{{ $customer->image }}" alt="{{ $customer->name }}" width="60" height="60"
                                     class="rounded" style="object-fit: cover;">
                             @else
                                 <span class="text-muted">No Image</span>
@@ -68,10 +68,10 @@
                             <a href="{{ route('customer.edit', $customer->id) }}" class="btn btn-sm btn-primary">Edit</a>
                             @if ($customer->deleted_at === null)
                                 <form action="{{ route('customer.delete', $customer->id) }}" method="POST" style="display:inline;"
-                                    onsubmit="return confirm('Are you sure you want to delete this shop?');">
+                                    id="delete-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-danger" id="delete-button">Delete</button>
                                 </form>
                             @else
                                 <a href="{{ route('customer.restore', $customer->id) }}" class="btn btn-sm btn-warning">Restore</a>

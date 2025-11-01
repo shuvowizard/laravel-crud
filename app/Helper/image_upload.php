@@ -20,16 +20,25 @@ if (!function_exists('imageUpload')) {
             $image->resize($width, $height);
 
             $image->save($directory . '/' . $fileName);
-            return url($path .'/'. $fileName);
+            return url($path . '/' . $fileName);
         }
     }
 }
 
 
 
-if (!function_exists('usd_to_bdt')){
-    function usd_to_bdt($amount){
-        $conversionRate = $amount * 123;
+if (!function_exists('usd_to_bdt')) {
+    function usd_to_bdt($usd)
+    {
+        $conversionRate = $usd * 123;
         return $conversionRate;
+    }
+}
+
+
+if (!function_exists('bdt_to_usd')) {
+    function bdt_to_usd($bdt)
+    {
+       return round($bdt / 123, 2);
     }
 }

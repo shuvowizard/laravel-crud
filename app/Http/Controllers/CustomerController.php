@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 
 class CustomerController extends Controller
 {
@@ -39,7 +41,7 @@ class CustomerController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'payment' => 'required|string|max:255',
+            'payment' => 'required|numeric|min:0',
         ]);
 
         $customer = new Customer();
@@ -49,7 +51,7 @@ class CustomerController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $directory = 'images/customers';
-            $customer->image = imageUpload($file, 800, 600, $directory);
+            $customer->image = imageUpload($file, 400, 300, $directory);
         }
         $customer->payment = usd_to_bdt($request->payment);
         $customer->save();
@@ -66,18 +68,36 @@ class CustomerController extends Controller
 
     public function update(Request $request, $id)
     {
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'payment' => 'required|numeric|min:0',            
         ]);
 
-        Customer::where('id', $id)->update([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'email' => $request->email,
-        ]);
+        $customer = Customer::findOrFail($id);
+
+        $customer->name = $request->name;
+        $customer->phone = $request->phone;
+        $customer->email = $request->email;
+        if ($request->hasFile('image')) {
+            // Find the image path
+            $fullPath = parse_url($customer->image, PHP_URL_PATH);
+            $path = public_path($fullPath);
+            
+            // If file exists then delete it
+            if (file_exists($path)){
+                File::delete($path);
+            }
+
+            // Update new image
+            $file = $request->file('image');
+            $directory = 'images/customers';
+            $customer->image = imageUpload($file, 400, 300, $directory);
+        }
+        $customer->payment = usd_to_bdt($request->payment);
+
+        $customer->save();
 
         return redirect()->route('customer.index')->with('success', 'Customer updated successfully.');
     }
@@ -87,6 +107,14 @@ class CustomerController extends Controller
         // Customer::destroy($id);
         $customer = Customer::findOrFail($id);
         // $customer->delete();
+
+        // Image path find then DELETE image
+        $fullPath = parse_url($customer->image, PHP_URL_PATH);
+        $path = public_path($fullPath);
+        if (file_exists($path)) {
+            File::delete($path);
+        }
+
         $customer->forceDelete();
         return redirect()->route('customer.index')->with('success', 'Customer deleted successfully.');
     }

@@ -54,7 +54,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="customer_payment" class="form-label">Customer Payment</label>
-                    <input type="text" class="form-control @error('payment') is-invalid @enderror"
+                    <input type="number" class="form-control @error('payment') is-invalid @enderror"
                         value="{{ old('payment') }}" placeholder="Enter customer payment" id="customer_payment"
                         name="payment">
                     @error('payment')
